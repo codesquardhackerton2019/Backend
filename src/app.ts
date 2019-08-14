@@ -6,7 +6,7 @@ import session from 'express-session';
 import createError from 'http-errors';
 import path from 'path';
 import connect from './connect';
-import indexRouter from './routes/index';
+import storeRouter from './routes/stores';
 import logger from './util/logger';
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
 
@@ -16,8 +16,6 @@ const mongoUrl = MONGODB_URI;
 connect({db: mongoUrl});
 
 const app = express();
-
-app.set('views', path.join(__dirname, '../../views'));
 
 app.use(flash());
 app.use(express.json());
@@ -42,7 +40,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use('/', indexRouter);
+app.use('/stores', storeRouter);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -60,12 +58,8 @@ app.use((err, req: Request, res: Response, next: NextFunction) => {
     logger.error(`Error message: ${err.message}\nStacktrace: ${err.stack}`);
   }
 
-  res.status(err.status || 500);
-  res.render('error', {
-    env: req.app.get('env'),
+  res.status(err.status || 500).send({
     errorMessage: err.message,
-    stackTrace: err.stack,
-    statusCode: err.status,
   });
 });
 
