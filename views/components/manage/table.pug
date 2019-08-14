@@ -1,0 +1,18 @@
+table#manage-table.uk-table.uk-table-middle.uk-table-divider.uk-table-hover.uk-table-striped
+  thead
+    tr
+      th.uk-width-auto(style='text-align: center;') 제목
+      th.uk-width-auto(style='text-align: center;') 게시일
+      th.uk-width-auto(style='text-align: center;') 수정
+      th.uk-width-auto(style='text-align: center;') 삭제
+  tbody#manage-tbody
+    each article in articles
+      tr
+        input.article-id(type='hidden' value=article._id)
+        td.article-title(style='text-align: center;')
+          a.black-font(href='/article/' + article._id)= article.title
+        td.article-createdAt(style='text-align: center;')= article.createdAt.toString().split(' ').slice(1,4).join('-')
+        td(style='text-align: center;')
+          button.article-modify-btn.uk-icon-button(uk-icon='pencil' style='color: black' uk-toggle='target: #article-modify-form')
+        td(style='text-align: center;')
+          button.article-delete-btn.uk-icon-button(uk-icon='trash' style='color: red')

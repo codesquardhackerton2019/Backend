@@ -1,0 +1,15 @@
+#signin-form(uk-modal='')
+  form.uk-modal-dialog.uk-modal-body.uk-margin-auto-vertical
+    button.uk-modal-close-default(type='button' uk-close='' style='left:unset;')
+    .uk-margin
+      .uk-inline(style='width: 100%')
+        a.uk-form-icon.uk-form-icon-flip(href="" uk-icon="icon: user")
+        input#signin-id-input.uk-input(placeholder="이메일을 입력하세요" autocomplete="off" )
+    .uk-margin
+      .uk-inline(style='width: 100%')
+        span.uk-form-icon.uk-form-icon-flip(uk-icon='icon: lock')
+        input#signin-password-input.uk-input(type='password' placeholder="비밀번호를 입력하세요") 
+    #signin-btn.uk-margin
+      button.uk-button.uk-button-primary.uk-width-1-1 로그인
+    .uk-margin
+      a#google-signin-btn.uk-button.uk-button-danger(href= googleAuthUrl style='width: 100%') Sign in with Google

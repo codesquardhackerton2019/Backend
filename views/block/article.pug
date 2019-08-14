@@ -1,0 +1,31 @@
+extends ../index
+
+block article
+  - const profileUrl = writer.profileImageUrl || '/image/avatar.png';
+  - const subscriptionBtnClass = user && writer._id == user._id ? 'uk-button-disable' : 'uk-button-danger';
+
+  div(style="width: 100%; margin: 40px; padding-bottom: 1px;")
+  div(style="width: 40%; margin: 50px auto;")
+    h1= article.title
+    .uk-flex.uk-flex-middle.uk-flex-between
+      span.uk-flex.uk-flex-middle
+        img#big-profile.uk-comment-avatar(src=profileUrl, width='48px', alt='', style='border-radius: 50%;')
+        .user-info(style='margin-left: 24px; display: inline-block')
+          p.uk-flex.uk-flex.middle(style='color: black; font-size: 15px; margin: 0')
+            a.black-font(href='/user/' + writer._id)= writer.email.split('@')[0]
+          p(style='color: black; font-size: 0.8em; margin: 0')= article.createdAt.toString().split(' ').slice(1,4).join('-')
+      if user
+        if likedArticle
+          i#like-btn.like-toggle-off.fas.fa-heart.fa-lg 
+        else
+          i#like-btn.like-toggle-on.far.fa-heart.fa-lg 
+      else
+          i.fas.fa-heart.fa-lg(disabled='' style='color: gray;')
+  div(style="width: 100%")
+    img(src= article.heroImageUrl)
+  .container
+    article.markdown-body !{rawHtml}
+      .uk-margin-medium-top
+      a.uk-button.uk-button-default.uk-width-1-1.green-elem(href=`/article/${article._id}/comments/show`)= `댓글 보기(${article.comments})`
+    script(src='/js/vendor/prism.js')
+    script(src='/js/likearticle.js' type='module')

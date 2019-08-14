@@ -1,0 +1,16 @@
+- var i = 0;
+- 
+  var articlesByTwo = 
+    articles.reduce((acc, article, idx) => { 
+      idx % 2 ? acc[Math.floor(idx / 2)].push(article) : acc.push([article]);
+      return acc;
+    }, []);
+for twoArticles in articlesByTwo
+  if(i % 2 == 0)
+    .uk-grid-match.uk-grid-small.uk-width-1-1(uk-grid='')
+      include index-list-even
+  else
+    .uk-grid-match.uk-grid-small.uk-width-1-1(uk-grid='')
+      include index-list-odd
+  end
+  - i++

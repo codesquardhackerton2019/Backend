@@ -1,0 +1,18 @@
+ul(uk-accordion='')
+  li
+    a.uk-button.uk-button-default.uk-accordion-title.disable-before(href='#' style='padding: 10px;') 댓글 쓰기
+    .uk-accordion-content
+      .uk-comment.uk-comment-primary.comment-border
+        .uk-comment-header.uk-grid-medium.uk-flex-middle(uk-grid='')
+          .uk-width-auto
+            img.uk-comment-avatar(src=userAvatar, width='80', height='80', alt='')
+          .uk-width-expand
+            h4.uk-comment-title.uk-margin-remove
+              span.uk-link-reset(href='#')= username
+        .uk-comment-body
+          form#comment-form(action=`/article/${article._id}/comments` method='POST')
+            fieldset.uk-fieldset
+              .uk-margin
+              textarea#comment-textarea.uk-textarea(rows='5', placeholder='' name='comment')
+            .uk-margin
+            button#comment-submit.uk-button.uk-button-default.uk-button-small.green-elem(style='padding: 5px !important;') 등록하기

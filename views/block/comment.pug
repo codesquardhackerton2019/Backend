@@ -1,0 +1,25 @@
+extends ../index
+
+block comment
+  - const defaultProfileImage = '/image/avatar.png';
+  - const userAvatar = user ? (user.profileImageUrl || defaultProfileImage) : defaultProfileImage;
+  - const username = user ? user.email.split('@')[0] : 'Anonymous';
+  div(style='width: 100%; background-color: rgb(250, 250, 250)')
+    .comment-container
+      .uk-card.uk-card-default.uk-card-small.uk-card-body
+        .uk-flex.uk-flex-right(style='position: relative;')
+          div(style='position: absolute;')
+            i.fas.fa-eye
+              span.uk-margin-small-left= article.hits
+            i.fas.fa-comments.uk-margin-small-left
+              spam.uk-margin-small-left= article.comments
+        div
+          a.uk-card-title.uk-heading-medium(href=`/article/${article._id}`)= article.title
+          .uk-margin-small
+            a.black-font(href=`/user/${article.writerId._id}` style='font-size= 1.1em').writer= article.writerId.email.split('@')[0]
+
+  #comment-area.comment-container
+    include ../components/comment/comment-form
+    include ../components/comment/comment-card
+
+  script(src='/js/comment.js' type='module')

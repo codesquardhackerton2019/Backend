@@ -1,0 +1,8 @@
+extends ../index
+
+block manage
+  .container
+    include ../components/manage/table
+    include ../components/manage/pagination
+    include ../components/manage/modifyform
+  script(src="/js/manage.js", type="module")
