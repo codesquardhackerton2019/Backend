@@ -11,9 +11,14 @@ const storeRouter = Router();
  *  stores:
  *   type: object
  *   required:
+ *     - id
  *     - name
  *     - tel
  *     - address
+ *     - totalScore
+ *     - commentSize
+ *     - imageUrl
+ *     - createdAt
  *   properties:
  *     id:
  *       type: string
@@ -32,27 +37,36 @@ const storeRouter = Router();
  *       description: 점수 총합
  *     comments:
  *       type: comment[]
- *       description: 식당 평가의 배열
+ *       description: 식당 평가의 배열, 목록 조회 시 제외됨
+ *     commentSize:
+ *       type: integer
+ *       description: 댓글 개수
+ *     imageUrl:
+ *       type: string
+ *       description: 식당 사진 url
+ *     menus:
+ *       type: menu[]
+ *       description: 식당의 메뉴 배열, 목록 조회 시 제외됨
+ *     createdAt:
+ *       type: Date
+ *       description: 식당이 DB에 추가된 날짜
+ *     modifiedAt:
+ *       type: Date
+ *       description: 식당 정보가 수정된 날짜, 리뷰나 메뉴를 추가할 때도 변경됨
  */
 
 /**
  * @swagger
- *  /stores:
+ *  /stores/recommand:
  *    get:
  *      tags:
  *      - stores
- *      description: 식당 목록 중 일부를 가져온다.
+ *      description: 추천 식당 조회
  *      produces:
  *      - applicaion/json
- *      parameters:
- *        - in: query
- *          name: size
- *          schema:
- *            type: integer
- *          description: 가져올 식당 목록의 개수
  *      responses:
  *       200:
- *        description: 식당 정보 리스트가 반환된다.
+ *        description: 추천할 식당 정보 리스트가 반환된다.
  *        content:
  *          application/json:
  *            schema:
@@ -60,6 +74,24 @@ const storeRouter = Router();
  *          items:
  *           $ref: '#/definitions/stores'
  */
+
+storeRouter.get('/recommand', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const stores = await storeController.getRecommandation();
+
+    res.send({
+      stores,
+      links: [{
+        rel: 'self',
+        href: '/stores',
+        action: 'POST',
+        types: ['application/json'],
+      }],
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 storeRouter.get('/', validateGetInputs, async (req: Request, res: Response, next: NextFunction) => {
   try {

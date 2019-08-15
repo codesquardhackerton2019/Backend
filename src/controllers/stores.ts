@@ -10,13 +10,6 @@ export interface ICreateStoreInput {
 
 async function getStores(size = 9): Promise<IStore[]> {
   try {
-    // const stores: IStore[] = await Store.find({
-    //   deletedAt: { $exists: false }
-    // },
-    // '-_id -__v -comments -menus', {
-    //   skip: page * limit,
-    //   limit,
-    // });
     const stores: IStore[] = await Store.aggregate([
       { $match: { deletedAt: { $exists: false } } },
       { $sample: { size }},
@@ -35,6 +28,32 @@ async function getStores(size = 9): Promise<IStore[]> {
     ]);
 
     return stores;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getRecommandation(): Promise<IStore[]> {
+  try {
+    const aggregationResult: IStore[] = await Store.aggregate([
+      { $match: { deletedAt: { $exists: false } } },
+      { $sort: { updatedAt: -1, name: 1 } },
+      { $limit: 3 },
+      { $project: {
+        _id: 0,
+        id: 1,
+        name: 1,
+        tel: 1,
+        address: 1,
+        totalScore: 1,
+        commentSize: 1,
+        imageUrl: 1,
+        createdAt: 1,
+        modifiedAt: 1,
+      }},
+    ]);
+
+    return aggregationResult;
   } catch (error) {
     throw error;
   }
@@ -80,4 +99,5 @@ export default {
   getStores,
   getStore,
   createStore,
+  getRecommandation,
 };
