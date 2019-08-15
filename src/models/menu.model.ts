@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { commentSchema } from './comment.model';
 
 export interface IMenu extends Document {
   _id         : Schema.Types.ObjectId;
@@ -14,8 +13,7 @@ export interface IMenu extends Document {
 export const menuSchema: Schema = new Schema({
   id         : { type: Number, required: true, unique: true },
   name       : { type: String, required: true },
-  price      : { type: Number, required: true, unique: true },
-  comments   : { type: [commentSchema], required: true, default: [] },
+  price      : { type: Number, required: true },
   createdAt  : { type: Date, required: true, default: Date.now },
   modifiedAt : { type: Date },
   deletedAt  : { type: Date },

@@ -5,10 +5,14 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import createError from 'http-errors';
 import path from 'path';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerOption from './config/swagger';
 import connect from './connect';
+import mockRouter from './routes/mock';
 import storeRouter from './routes/stores';
 import logger from './util/logger';
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
+import swaggerUiExpress = require('swagger-ui-express');
 
 const MongoStore = mongo(session);
 const mongoUrl = MONGODB_URI;
@@ -16,6 +20,7 @@ const mongoUrl = MONGODB_URI;
 connect({db: mongoUrl});
 
 const app = express();
+const specs = swaggerJSDoc(swaggerOption);
 
 app.use(flash());
 app.use(express.json());
@@ -41,6 +46,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/stores', storeRouter);
+app.use('/mock', mockRouter);
+app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
