@@ -8,18 +8,32 @@ export interface ICreateStoreInput {
   imageUrl?   : IStore['imageUrl'];
 }
 
-async function getStores({
-  page = 0,
-  limit = 10,
-}): Promise<IStore[]> {
+async function getStores(size = 9): Promise<IStore[]> {
   try {
-    const stores: IStore[] = await Store.find({
-      deletedAt: { $exists: false }
-    },
-    '-_id -__v -comments -menus', {
-      skip: page * limit,
-      limit,
-    });
+    // const stores: IStore[] = await Store.find({
+    //   deletedAt: { $exists: false }
+    // },
+    // '-_id -__v -comments -menus', {
+    //   skip: page * limit,
+    //   limit,
+    // });
+    const stores: IStore[] = await Store.aggregate([
+      { $match: { deletedAt: { $exists: false } } },
+      { $sample: { size }},
+      { $project: {
+        _id: 0,
+        id: 1,
+        name: 1,
+        tel: 1,
+        address: 1,
+        totalScore: 1,
+        commentSize: 1,
+        imageUrl: 1,
+        createdAt: 1,
+        modifiedAt: 1,
+      }},
+    ]);
+
     return stores;
   } catch (error) {
     throw error;

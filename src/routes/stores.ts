@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import storeController, { ICreateStoreInput } from '../controllers/stores';
-import { validateCreateInputs } from '../middlewares/stores';
+import { validateCreateInputs, validateGetInputs } from '../middlewares/stores';
 import { IStore } from '../models/store.model';
 
 const storeRouter = Router();
@@ -46,15 +46,10 @@ const storeRouter = Router();
  *      - applicaion/json
  *      parameters:
  *        - in: query
- *          name: page
+ *          name: size
  *          schema:
  *            type: integer
- *          description: 가져올 페이지의 번호를 적는다. 번호는 1부터 시작한다.
- *        - in: query
- *          name: limit
- *          schema:
- *            type: integer
- *          description:  식당 정보의 개수를 적는다.
+ *          description: 가져올 식당 목록의 개수
  *      responses:
  *       200:
  *        description: 식당 정보 리스트가 반환된다.
@@ -63,13 +58,12 @@ const storeRouter = Router();
  *            schema:
  *          type: Object
  *          items:
- *           $ref: '#/definitions/boardItem'
+ *           $ref: '#/definitions/stores'
  */
 
-storeRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+storeRouter.get('/', validateGetInputs, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { page, limit } = req.query;
-    const stores = await storeController.getStores({page, limit});
+    const stores = await storeController.getStores(req.query.size);
 
     res.send({
       stores,
@@ -84,6 +78,33 @@ storeRouter.get('/', async (req: Request, res: Response, next: NextFunction) => 
     next(error);
   }
 });
+
+/**
+ * @swagger
+ *  /stores/{storeId}:
+ *    get:
+ *      tags:
+ *      - stores
+ *      description: 식당의 상세 정보(메뉴, 댓글 포함)를 가져온다.
+ *      produces:
+ *      - applicaion/json
+ *      parameters:
+ *        - in: path
+ *          name: storeId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: 상세 정보를 볼 식당의 id
+ *      responses:
+ *       200:
+ *        description: 식당 정보가 반환된다.
+ *        content:
+ *          application/json:
+ *            schema:
+ *          type: Object
+ *          items:
+ *           $ref: '#/definitions/stores'
+ */
 
 storeRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
