@@ -93,6 +93,33 @@ storeRouter.get('/recommand', async (req: Request, res: Response, next: NextFunc
   }
 });
 
+/**
+ * @swagger
+ *  /stores:
+ *    get:
+ *      tags:
+ *      - stores
+ *      description: 식당의 목록을 가져온다.
+ *      produces:
+ *      - applicaion/json
+ *      parameters:
+ *        - in: query
+ *          name: size
+ *          schema:
+ *            type: integer
+ *          required: true
+ *          description: 식당 목록 개수
+ *      responses:
+ *       200:
+ *        description: 식당 정보가 배열로 반환된다.
+ *        content:
+ *          application/json:
+ *            schema:
+ *          type: Object
+ *          items:
+ *           $ref: '#/definitions/stores'
+ */
+
 storeRouter.get('/', validateGetInputs, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const stores = await storeController.getStores(req.query.size);
