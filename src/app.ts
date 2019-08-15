@@ -1,17 +1,20 @@
 import flash from 'connect-flash';
 import mongo from 'connect-mongo';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import createError from 'http-errors';
 import path from 'path';
+import request from 'request';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerOption from './config/swagger';
 import connect from './connect';
+import Store from './models/store.model';
 import mockRouter from './routes/mock';
 import storeRouter from './routes/stores';
 import logger from './util/logger';
-import { MONGODB_URI, SESSION_SECRET } from './util/secrets';
+import { MONGODB_URI, SESSION_SECRET, SLACK_AUTH_TOKEN } from './util/secrets';
 import swaggerUiExpress = require('swagger-ui-express');
 
 const MongoStore = mongo(session);
@@ -22,6 +25,7 @@ connect({db: mongoUrl});
 const app = express();
 const specs = swaggerJSDoc(swaggerOption);
 
+app.use(cors());
 app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -48,6 +52,31 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/stores', storeRouter);
 app.use('/mock', mockRouter);
 app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+app.use('/slack/recommands', async (req, res) => {
+  try {
+    const store = await Store.aggregate([
+      { $match: { deletedAt: { $exists: false } } },
+      { $sample: { size: 1 } },
+      { $project: {
+        _id: 0,
+        name: 1,
+      }},
+    ]);
+    const data = {
+      form: {
+        token: SLACK_AUTH_TOKEN,
+        channel: '#잡담',
+        text: `${store[0].name}\nhttps://www.google.com/search?q=${store[0].name.split(' ').join('+')}`
+      }
+    };
+    request.post('https://slack.com/api/chat.postMessage', data, (error, response, body) => {
+        res.json();
+    });
+  } catch (error) {
+    res.status(500).send({message: 'error occur'});
+  }
+});
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
