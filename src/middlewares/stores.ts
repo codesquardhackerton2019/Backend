@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { isUndefined } from 'util';
 
 export function validateCreateInputs (req: Request, res: Response, next: NextFunction) {
   try {
@@ -19,9 +18,9 @@ export function validateCreateInputs (req: Request, res: Response, next: NextFun
 export function validateGetInputs (req: Request, res: Response, next: NextFunction) {
   try {
     const size = req.query.size;
-    if (!isUndefined(size) && isNaN(parseInt(size, 10))) throw new Error();
+    if (size && isNaN(parseInt(size, 10))) throw new Error();
 
-    req.query.size = parseInt(size, 10);
+    req.query.size = size ? parseInt(size, 10) : undefined;
     next();
   } catch (error) {
     error.status = 400;
