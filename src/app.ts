@@ -1,3 +1,4 @@
+import axios from 'axios';
 import flash from 'connect-flash';
 import mongo from 'connect-mongo';
 import cookieParser from 'cookie-parser';
@@ -6,6 +7,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import createError from 'http-errors';
 import path from 'path';
+import qs from 'querystring';
 import request from 'request';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerOption from './config/swagger';
@@ -14,7 +16,7 @@ import Store from './models/store.model';
 import mockRouter from './routes/mock';
 import storeRouter from './routes/stores';
 import logger from './util/logger';
-import { MONGODB_URI, SESSION_SECRET, SLACK_AUTH_TOKEN } from './util/secrets';
+import { KAKAO_KEY, MONGODB_URI, SESSION_SECRET, SLACK_AUTH_TOKEN } from './util/secrets';
 import swaggerUiExpress = require('swagger-ui-express');
 
 const MongoStore = mongo(session);
@@ -63,18 +65,50 @@ app.use('/slack/recommands', async (req, res) => {
         name: 1,
       }},
     ]);
+    const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${qs.escape(store[0].name)}&x=127.03342973835&y=37.4908543445167&radius=20000`;
+    const axiosResult = await axios(
+      {
+        url,
+        method: 'GET',
+        headers: {
+          Authorization: `KakaoAK ${KAKAO_KEY}`
+        }
+      });
     const data = {
       form: {
         token: SLACK_AUTH_TOKEN,
-        channel: '#잡담',
-        text: `${store[0].name}\nhttps://www.google.com/search?q=${store[0].name.split(' ').join('+')}`
+        channel: '#815해커톤',
+        text: `${store[0].name}\n${axiosResult.data.documents[0].place_url.replace('http', 'https')}`,
+        unfurl_links: true,
+        unfurl_media: true,
       }
     };
     request.post('https://slack.com/api/chat.postMessage', data, (error, response, body) => {
-        res.json();
+      res.json();
     });
   } catch (error) {
     res.status(500).send({message: 'error occur'});
+  }
+});
+
+app.use('/kakao', async (req, res) => {
+  try {
+    const name = '코드스쿼드';
+
+    const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${qs.escape(name)}}`;
+    const axiosResult = await axios(
+      {
+        url,
+        method: 'GET',
+        headers: {
+          Authorization: `KakaoAK ${KAKAO_KEY}`
+        }
+      });
+
+    res.send({data: axiosResult.data});
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({message: '실패'});
   }
 });
 

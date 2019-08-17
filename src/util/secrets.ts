@@ -19,6 +19,8 @@ export const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 export const SLACK_VERIFICATION_TOKEN = process.env.SLACK_VERIFICATION_TOKEN;
 export const SLACK_AUTH_TOKEN = process.env.SLACK_AUTH_TOKEN;
 
+export const KAKAO_KEY = process.env.KAKAO_KEY;
+
 if (!SESSION_SECRET) {
     logger.error('No client secret. Set SESSION_SECRET environment variable.');
     process.exit(1);
