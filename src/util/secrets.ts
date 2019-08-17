@@ -18,6 +18,7 @@ export const SLACK_CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET;
 export const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 export const SLACK_VERIFICATION_TOKEN = process.env.SLACK_VERIFICATION_TOKEN;
 export const SLACK_AUTH_TOKEN = process.env.SLACK_AUTH_TOKEN;
+export const SLACK_DEST_ROOM = process.env.SLACK_DEST_ROOM;
 
 export const KAKAO_KEY = process.env.KAKAO_KEY;
 

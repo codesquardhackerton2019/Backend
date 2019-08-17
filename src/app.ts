@@ -16,7 +16,7 @@ import Store from './models/store.model';
 import mockRouter from './routes/mock';
 import storeRouter from './routes/stores';
 import logger from './util/logger';
-import { KAKAO_KEY, MONGODB_URI, SESSION_SECRET, SLACK_AUTH_TOKEN } from './util/secrets';
+import { KAKAO_KEY, MONGODB_URI, SESSION_SECRET, SLACK_AUTH_TOKEN, SLACK_DEST_ROOM } from './util/secrets';
 import swaggerUiExpress = require('swagger-ui-express');
 
 const MongoStore = mongo(session);
@@ -77,7 +77,7 @@ app.use('/slack/recommands', async (req, res) => {
     const data = {
       form: {
         token: SLACK_AUTH_TOKEN,
-        channel: '#815해커톤',
+        channel: SLACK_DEST_ROOM,
         text: `${store[0].name}\n${axiosResult.data.documents[0].place_url.replace('http', 'https')}`,
         unfurl_links: true,
         unfurl_media: true,
