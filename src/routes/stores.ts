@@ -44,6 +44,9 @@ const storeRouter = Router();
  *     imageUrl:
  *       type: string
  *       description: 식당 사진 url
+ *     description:
+ *       type: string
+ *       description: 식당 한줄 평
  *     menus:
  *       type: menu[]
  *       description: 식당의 메뉴 배열, 목록 조회 시 제외됨
@@ -81,12 +84,6 @@ storeRouter.get('/recommand', async (req: Request, res: Response, next: NextFunc
 
     res.send({
       stores,
-      links: [{
-        rel: 'self',
-        href: '/stores',
-        action: 'POST',
-        types: ['application/json'],
-      }],
     });
   } catch (error) {
     next(error);
@@ -126,12 +123,6 @@ storeRouter.get('/', validateGetInputs, async (req: Request, res: Response, next
 
     res.send({
       stores,
-      links: [{
-        rel: 'self',
-        href: '/stores',
-        action: 'POST',
-        types: ['application/json'],
-      }],
     });
   } catch (error) {
     next(error);
@@ -171,14 +162,6 @@ storeRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) 
 
     res.send({
       store,
-      links: [
-        {
-          rel: 'self',
-          href: '/stores',
-          action: 'POST',
-          types: ['application/json'],
-        }
-      ],
     });
   } catch (error) {
     next(error);
@@ -197,11 +180,6 @@ storeRouter.post('/', validateCreateInputs, async (req: Request, res: Response, 
 
     res.send({
       store,
-      links: {
-        rel: 'self',
-        href: '/stores',
-        action: 'GET',
-      },
     });
   } catch (error) {
     next(error);

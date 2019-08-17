@@ -13,6 +13,7 @@ export interface IStore extends Document {
   comments    : [IComment];
   commentSize : string;
   menus       : [IMenu];
+  description : string;
   createdAt   : Date;
   modifiedAt? : Date;
   deletedAt?  : Date;
@@ -26,6 +27,7 @@ export const storeSchema: Schema = new Schema({
   totalScore  : { type: Number, required: true, default: 0 },
   comments    : { type: Array, required: true, default: [] },
   commentSize : { type: Number, required: true, default: 0 },
+  description : { type: String },
   menus       : { type: Array, required: true, default: [] },
   imageUrl    : { type: String },
   createdAt   : { type: Date, required: true, default: Date.now },

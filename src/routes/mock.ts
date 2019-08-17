@@ -8,25 +8,6 @@ import Store from '../models/store.model';
 
 const mockRouter = Router();
 
-// mockRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const { page, limit } = req.query;
-//     const stores = storeController.getStores({page, limit});
-
-//     res.send({
-//       stores,
-//       links: {
-//         rel: 'self',
-//         href: '/stores',
-//         action: 'POST',
-//         types: ['application/x-www-form-urlencoded', 'application/json'],
-//       },
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
 mockRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const mockDataReadStream =
@@ -43,7 +24,8 @@ mockRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
         name: inputs[0],
         tel: inputs[1],
         address: inputs[2],
-        imageUrl: inputs[3],
+        description: inputs[3],
+        imageUrl: inputs[4],
       });
       store.save((err, product) => {
         console.log(err);
